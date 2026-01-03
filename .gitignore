@@ -15,6 +15,7 @@ build/
 *.xcuserstate
 *.xccheckout
 *.xcscmblueprint
+Exchange.xcconfig
 
 ## Obj-C/Swift specific
 *.hmap
