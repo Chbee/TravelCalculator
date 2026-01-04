@@ -1,2 +1,0 @@
-EXCHANGE_RATE_BASE_URL = https://www.koreaexim.go.kr/site/program/financial/exchangeJSON
-EXCHANGE_RATE_API_KEY = 

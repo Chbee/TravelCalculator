@@ -15,7 +15,7 @@ build/
 *.xcuserstate
 *.xccheckout
 *.xcscmblueprint
-Exchange.xcconfig
+TravelCalculator/Config/Exchange.xcconfig
 
 ## Obj-C/Swift specific
 *.hmap
