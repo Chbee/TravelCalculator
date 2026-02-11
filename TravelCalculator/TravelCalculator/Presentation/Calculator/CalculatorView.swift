@@ -11,17 +11,23 @@ struct CalculatorView: View {
     @StateObject private var store = CalculatorStore()
     
     var body: some View {
-        VStack(spacing: 16) {
-            // 디스플레이
-            Text(store.state.display)
-                .font(.system(size: 40, weight: .bold))
-                .frame(maxWidth: .infinity, alignment: .trailing)
+        return GeometryReader { proxy in
+            let width = proxy.size.width * 0.8
             
-            // 키패드
-            CalculatorKeypad(
-                state: store.state,
-                send: store.send
-            )
+            VStack(spacing: 16) {
+                // 디스플레이
+                Text(store.state.formattedDisplay)
+                    .font(.system(size: 40, weight: .bold))
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                
+                // 키패드
+                CalculatorKeypad(
+                    state: store.state,
+                    send: store.send
+                )
+            }
+            .frame(width: width)
+            .frame(maxWidth: .infinity)
         }
     }
 }

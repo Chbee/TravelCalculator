@@ -19,18 +19,29 @@ struct CalculatorKeypad: View {
         [.number(0), .decimal, .equals]
     ]
     
+    private let spacing: CGFloat = 8
+    
     var body: some View {
-        VStack(spacing: 8) {
-            ForEach(buttons, id: \.self) { row in
-                HStack(spacing: 8) {
-                    ForEach(row, id: \.self) { button in
-                        KeyButton(
-                            button: button,
-                            send: send
-                        )
+        return GeometryReader { proxy in
+            let keypadWidth = proxy.size.width
+            let buttonSize = (keypadWidth - spacing*3) / 4
+            
+            VStack(spacing: spacing) {
+                ForEach(buttons, id: \.self) { row in
+                    HStack(spacing: spacing) {
+                        ForEach(row, id: \.self) { button in
+                            KeyButton(
+                                button: button,
+                                buttonSize: buttonSize,
+                                spacing: spacing,
+                                send: send
+                            )
+                        }
                     }
                 }
             }
+            .frame(width: keypadWidth)
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -38,6 +49,8 @@ struct CalculatorKeypad: View {
 
 private struct KeyButton: View {
     var button: CalculatorButton
+    var buttonSize: CGFloat
+    var spacing: CGFloat
     let send: (CalculatorIntent) -> Void
     
     @Environment(\.colorScheme) private var colorScheme
@@ -48,9 +61,10 @@ private struct KeyButton: View {
             send(.keyPressed(button))
         } label: {
             getButtonBackgroundColor()
-                .frame(width: 48, height: 48)
+                .frame(width: button == .number(0) ? buttonSize * 2 + spacing : buttonSize, height: buttonSize)
                 .overlay {
                     Text(button.title)
+                        .font(.system(size: buttonSize * 0.25))
                         .foregroundStyle(getButtonTitleColor())
                 }
                 .cornerRadius(10)

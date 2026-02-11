@@ -26,6 +26,18 @@ struct CalculatorReducer {
                   + "\(int)"
             }
         case .operator(let `operator`):
+            let cur = Double(state.display) ?? 0
+            
+            if let prev = state.previousValue,
+               let op = state.pendingOperator
+            {
+                let rs = calculate(prev, op, cur)
+                state.display = rs
+                state.previousValue = Double(rs)
+            } else {
+                state.previousValue = cur
+            }
+            
             state.pendingOperator = `operator`
             state.isEnteringNewNumber = true
         case .decimal:
@@ -36,18 +48,39 @@ struct CalculatorReducer {
             state.display += "."
             state.isEnteringNewNumber = false
         case .equals:
-            // 실제 연산 수행
+            guard let prev = state.previousValue,
+                  let op = state.pendingOperator
+            else { return }
+            
+            let cur = Double(state.display) ?? 0
+            state.display = calculate(prev, op, cur)
+            
+            state.previousValue = nil
+            state.pendingOperator = nil
+            
             state.isEnteringNewNumber = true
         case .allClear:
-            // TODO: 히스토리 추가 시 전체 초기화(히스토리 포함)로 분리
             state = CalculatorState()
         case .clear:
-            // TODO: 히스토리 도입 전까지는 표시값만 초기화하는 로직으로 분리
-            state = CalculatorState()
+            state.display = "0"
+            state.isEnteringNewNumber = true
         case .backspace:
             guard state.isEnteringNewNumber == false else { return }
             state.display = String(state.display.dropLast())
             if state.display.isEmpty { state.display = "0" }
+        }
+    }
+    
+    private func calculate(_ prev: Double, _ op: CalculatorButton.Operator, _ cur: Double) -> String {
+        switch op {
+        case .add:
+            return String(prev + cur)
+        case .subtract:
+            return String(prev - cur)
+        case .multiply:
+            return String(prev * cur)
+        case .divide:
+            return String(prev / cur)
         }
     }
 }
