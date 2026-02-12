@@ -1,6 +1,6 @@
 # 💱 TravelCalculator
 
-![Progress](https://img.shields.io/badge/V1_Progress-5%2F45_(11%25)-orange)
+![Progress](https://img.shields.io/badge/V1_Progress-5%2F45_(11%25)-red)
 
 여행지에서 사용할 계산기를 만드는 iOS 앱입니다.
 SwiftUI와 MVI 아키텍처를 중심으로 설계하고, 학습과 실험을 함께 진행합니다.
@@ -80,7 +80,7 @@ TravelCalculator/
 
 #### 1.2 디스플레이 영역 개선
 - [x] **1.2.1 천단위 콤마 포맷팅** - 1234567 → 1,234,567 표시
-- [ ] **1.2.2 긴 숫자 처리** - 자릿수 제한 또는 폰트 크기 자동 조절
+- [~] **1.2.2 긴 숫자 처리** - 자릿수 제한 또는 폰트 크기 자동 조절
 - [x] **1.2.3 에러 메시지 표시** - state.errorMessage 화면에 표시
 
 #### 1.3 통화 선택 UI
