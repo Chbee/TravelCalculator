@@ -15,7 +15,9 @@ struct CalculatorState: Equatable {
     }
     var pendingOperator: CalculatorButton.Operator? = nil // 다음 연산에 사용할 연산자(선택된 상태)
     var isEnteringNewNumber: Bool = true // 새 숫자 입력 시작 여부(연산 후 첫 입력 판단)
-    var errorMessage: String? = nil // 오류 발생 시 사용자에게 보여줄 메시지
+    var errorMessage: String? = nil // 디버깅/추적용 오류 문자열
+    // TODO: 전역으로 이동 필요
+    var toast: ToastPayload? = nil // 사용자에게 노출할 토스트 메시지
     var previousValue: Double? = nil // 연산을 위해 필요
 }
 

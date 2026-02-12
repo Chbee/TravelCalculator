@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+// TODO: 전역으로 이동 필요
 enum CalculatorIntent: Equatable {
-      case keyPressed(CalculatorButton)
-  }
+    case keyPressed(CalculatorButton)
+    case dismissToast
+}
 
 
 enum CalculatorButton: Hashable {

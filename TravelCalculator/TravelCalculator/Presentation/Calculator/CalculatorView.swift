@@ -10,6 +10,13 @@ import SwiftUI
 struct CalculatorView: View {
     @StateObject private var store = CalculatorStore()
     
+    private var toastBinding: Binding<ToastPayload?> {
+        Binding(
+            get: { store.state.toast },
+            set: { _ in store.send(.dismissToast) }
+        )
+    }
+    
     var body: some View {
         return GeometryReader { proxy in
             let width = proxy.size.width * 0.8
@@ -29,6 +36,7 @@ struct CalculatorView: View {
             .frame(width: width)
             .frame(maxWidth: .infinity)
         }
+        .toast(toastBinding)
     }
 }
 

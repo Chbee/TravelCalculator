@@ -12,6 +12,8 @@ struct CalculatorReducer {
         switch intent {
         case .keyPressed(let calculatorButton):
             handleKey(&state, key: calculatorButton)
+        case .dismissToast:
+            state.toast = nil
         }
     }
     
@@ -43,6 +45,13 @@ struct CalculatorReducer {
         case .decimal:
             guard state.display.contains(".") == false else {
                 state.errorMessage = "소수점은 하나만 올 수 있습니다."
+                // TODO: 전역으로 이동 필요
+                state.toast = ToastPayload(
+                    style: .warning,
+                    title: "주의",
+                    message: "소수점은 하나만 입력할 수 있습니다.",
+                    duration: 2
+                )
                 return
             }
             state.display += "."
