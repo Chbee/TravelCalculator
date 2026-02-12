@@ -26,6 +26,8 @@ struct CalculatorView: View {
                 Text(store.state.formattedDisplay)
                     .font(.system(size: 40, weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .trailing)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
                 
                 // 키패드
                 CalculatorKeypad(
