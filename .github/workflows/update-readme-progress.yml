@@ -1,0 +1,35 @@
+name: Update README Progress
+
+on:
+  push:
+    branches: [master, develop]
+
+jobs:
+  update-progress:
+    # 자동 커밋에 의한 무한 루프 방지
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Parse commit and update README
+        run: |
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          chmod +x scripts/update_readme_progress.sh
+          ./scripts/update_readme_progress.sh "$COMMIT_MSG"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          # 변경사항이 있을 때만 커밋
+          git diff --staged --quiet || git commit -m "docs: update README progress [ci skip]"
+          git push
