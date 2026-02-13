@@ -19,6 +19,7 @@ struct CalculatorState: Equatable {
     // TODO: 전역으로 이동 필요
     var toast: ToastPayload? = nil // 사용자에게 노출할 토스트 메시지
     var previousValue: Double? = nil // 연산을 위해 필요
+    var isInputLimitExceeded: Bool = false  
 }
 
 private extension Double {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct CalculatorReducer {
     private let maxInputDigits = 12
@@ -14,6 +15,8 @@ struct CalculatorReducer {
         switch intent {
         case .keyPressed(let calculatorButton):
             handleKey(&state, key: calculatorButton)
+        case .resetInputLimitFlag:
+            state.isInputLimitExceeded = false 
         case .dismissToast:
             state.toast = nil
         }
@@ -29,6 +32,9 @@ struct CalculatorReducer {
             }
             
             guard digitCount(next) <= maxInputDigits else {
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                
+                state.isInputLimitExceeded = true
                 state.toast = ToastPayload(
                     style: .warning,
                     title: "입력 제한",
