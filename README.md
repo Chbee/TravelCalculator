@@ -84,7 +84,7 @@ TravelCalculator/
 - [x] **1.2.3 에러 메시지 표시** - state.errorMessage 화면에 표시
 
 #### 1.3 통화 선택 UI
-- [ ] **1.3.1 Currency enum 정의** - USD, TWD, KRW 3개 통화 정의
+- [~] **1.3.1 Currency enum 정의** - USD, TWD, KRW 3개 통화 정의
 - [ ] **1.3.2 통화 선택 버튼 UI** - 기준통화/목표통화 선택 버튼 2개
 - [ ] **1.3.3 통화 State 추가** - sourceCurrency, targetCurrency 속성
 - [ ] **1.3.4 통화 선택 Intent 추가** - selectSourceCurrency, selectTargetCurrency
