@@ -22,6 +22,16 @@ struct CalculatorView: View {
             let width = proxy.size.width * 0.8
             
             VStack(spacing: 16) {
+                // 툴바
+                CalculatorToolbar(
+                    currency: .KRW, // TODO: 선택된 통화 연결
+                    isOnline: true, // TODO: 네트워크 상태 연결
+                    lastUpdated: "방금 전", // TODO: 실제 업데이트 시간 연결
+                    onCurrencyTap: { /* TODO: 통화 선택 화면 이동 */ },
+                    onCameraTap: { /* TODO: 카메라 기능 */ },
+                    onSettingsTap: { /* TODO: 설정 화면 이동 */ }
+                )
+
                 // 디스플레이
                 Text(store.state.formattedDisplay)
                     .font(.system(size: 40, weight: .bold))
