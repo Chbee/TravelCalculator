@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct CurrencySelectView: View {
-    private var locationPermission = false
-
+    @StateObject private var store = CurrencySelectStore()
+    
     private var locationButtonColor: Color {
-        locationPermission ? Color.green500 : Color.main600
+        store.state.locationPermission ? Color.green500 : Color.main600
     }
 
     var body: some View {
@@ -35,7 +35,7 @@ struct CurrencySelectView: View {
 
                 // MARK: - Location Button
                 Button {
-                    // TODO: 현재 위치로 조회
+                    store.send(.tapCurrentLocation)
                 } label: {
                     HStack(spacing: 8) {
                         Image("map-pin")
@@ -59,9 +59,9 @@ struct CurrencySelectView: View {
 
                 // MARK: - Currency List
                 VStack(spacing: 0) {
-                    ForEach(Currency.allCases) { currency in
+                    ForEach(store.state.currencies) { currency in
                         Button {
-                            // TODO: 통화 선택 처리
+                            store.send(.tapCurrency(currency))
                         } label: {
                             HStack(spacing: 16) {
                                 Text(currency.flag)
@@ -94,6 +94,9 @@ struct CurrencySelectView: View {
             }
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(16)
+        }
+        .onAppear {
+            store.send(.onAppear)
         }
     }
 }
