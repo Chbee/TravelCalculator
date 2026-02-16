@@ -11,8 +11,7 @@ import SwiftUI
 enum CalculatorIntent: Equatable {
     case keyPressed(CalculatorButton)
     case resetInputLimitFlag
-    // TODO: 전역으로 이동 필요
-    case dismissToast
+    case selectCurrency(Currency)
 }
 
 

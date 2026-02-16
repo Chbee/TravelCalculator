@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct CurrencySelectView: View {
-    @StateObject private var store = CurrencySelectStore()
-    
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var toastManager: ToastManager
+    @State private var store: CurrencySelectStore?
+
+    var initialCurrency: Currency = .KRW
+    var onSelect: ((Currency) -> Void)?
+
     private var locationButtonColor: Color {
-        store.state.locationPermission ? Color.green500 : Color.main600
+        guard let store else { return Color.gray500 }
+        switch store.state.locationPermission {
+        case .granted: return Color.green500
+        default: return Color.gray500
+        }
     }
 
     var body: some View {
@@ -19,88 +28,120 @@ struct CurrencySelectView: View {
             Color.main100
                 .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // MARK: - Header
-                VStack(spacing: 8) {
-                    Text("여행지 선택")
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundStyle(Color.main800)
-
-                    Text("통화 설정을 위해 국가를 선택해주세요")
-                        .font(.subheadline)
-                        .foregroundStyle(Color.textSecondary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 20)
-
-                // MARK: - Location Button
-                Button {
-                    store.send(.tapCurrentLocation)
-                } label: {
-                    HStack(spacing: 8) {
-                        Image("map-pin")
-                            .renderingMode(.template)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-
-                        Text("현재 위치로 자동 설정")
-                            .fontWeight(.semibold)
-                    }
-                    .foregroundStyle(locationButtonColor)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 20)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(locationButtonColor, lineWidth: 1.5)
-                )
-                .padding(.bottom, 24)
-
-                // MARK: - Currency List
+            if let store {
                 VStack(spacing: 0) {
-                    ForEach(store.state.currencies) { currency in
-                        Button {
-                            store.send(.tapCurrency(currency))
-                        } label: {
-                            HStack(spacing: 16) {
-                                Text(currency.flag)
-                                    .font(.system(size: 28))
+                    // MARK: - Header
+                    VStack(spacing: 8) {
+                        Text("여행지 선택")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundStyle(Color.main800)
 
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(currency.countryName)
-                                        .font(.body)
-                                        .fontWeight(.medium)
-                                        .foregroundStyle(Color.textPrimary)
+                        Text("통화 설정을 위해 국가를 선택해주세요")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.bottom, 20)
 
-                                    Text(currency.rawValue)
-                                        .font(.caption)
-                                        .foregroundStyle(Color.textTertiary)
-                                }
-
-                                Spacer()
+                    // MARK: - Location Button
+                    Button {
+                        store.send(.tapCurrentLocation)
+                    } label: {
+                        HStack(spacing: 8) {
+                            if store.state.isSearchingLocation {
+                                ProgressView()
+                                    .tint(locationButtonColor)
+                            } else {
+                                Image("map-pin")
+                                    .renderingMode(.template)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
                             }
-                            .padding(.vertical, 14)
-                            .padding(.horizontal, 16)
+                            Text(store.state.isSearchingLocation ? "위치를 찾고있어요" : "현재 위치로 자동 설정")
+                                .fontWeight(.semibold)
                         }
+                        .foregroundStyle(locationButtonColor)
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 20)
+                        .frame(minWidth: 220)
+                    }
+                    .disabled(store.state.isSearchingLocation)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(locationButtonColor, lineWidth: 1.5)
+                    )
+                    .animation(.easeInOut(duration: 0.2), value: store.state.isSearchingLocation)
+                    .padding(.bottom, 24)
 
-                        if currency != Currency.allCases.last {
-                            Divider()
-                                .padding(.leading, 60)
+                    // MARK: - Currency List
+                    VStack(spacing: 0) {
+                        ForEach(store.state.currencies) { currency in
+                            Button {
+                                store.send(.tapCurrency(currency))
+                                onSelect?(currency)
+                                dismiss()
+                            } label: {
+                                HStack(spacing: 16) {
+                                    Text(currency.flag)
+                                        .font(.system(size: 28))
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(currency.countryName)
+                                            .font(.body)
+                                            .fontWeight(.medium)
+                                            .foregroundStyle(Color.textPrimary)
+
+                                        Text(currency.rawValue)
+                                            .font(.caption)
+                                            .foregroundStyle(Color.textTertiary)
+                                    }
+
+                                    Spacer()
+
+                                    if store.state.selectedCurrency == currency {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundStyle(Color.green500)
+                                    }
+                                }
+                                .padding(.vertical, 14)
+                                .padding(.horizontal, 16)
+                            }
+
+                            if currency != Currency.allCases.last {
+                                Divider()
+                                    .padding(.leading, 60)
+                            }
                         }
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .frame(maxHeight: .infinity, alignment: .top)
+                .padding(16)
             }
-            .frame(maxHeight: .infinity, alignment: .top)
+        }
+        .overlay(alignment: .topTrailing) {
+            Button(action: { dismiss() }) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Color.main800)
+                    .padding(10)
+                    .background(Color.main100.opacity(0.9))
+                    .clipShape(Circle())
+            }
             .padding(16)
         }
         .onAppear {
-            store.send(.onAppear)
+            if store == nil {
+                store = CurrencySelectStore(toastManager: toastManager)
+            }
+            store?.send(.onAppear(initialCurrency: initialCurrency))
         }
     }
 }
 
 #Preview {
     CurrencySelectView()
+        .environmentObject(ToastManager())
 }

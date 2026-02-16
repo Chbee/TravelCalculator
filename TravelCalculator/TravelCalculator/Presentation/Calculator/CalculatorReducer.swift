@@ -10,18 +10,18 @@ import UIKit
 
 struct CalculatorReducer {
     private let maxInputDigits = 12
-    
+
     func reduce(state: inout CalculatorState, intent: CalculatorIntent) {
         switch intent {
         case .keyPressed(let calculatorButton):
             handleKey(&state, key: calculatorButton)
         case .resetInputLimitFlag:
-            state.isInputLimitExceeded = false 
-        case .dismissToast:
-            state.toast = nil
+            state.isInputLimitExceeded = false
+        case .selectCurrency(let currency):
+            state.selectedCurrency = currency
         }
     }
-    
+
     private func handleKey(_ state: inout CalculatorState, key: CalculatorButton) {
         switch key {
         case .number(let int):
@@ -30,25 +30,25 @@ struct CalculatorReducer {
             if state.isEnteringNewNumber {
                 next = "\(int)"
             }
-            
+
             guard digitCount(next) <= maxInputDigits else {
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                
+
                 state.isInputLimitExceeded = true
-                state.toast = ToastPayload(
+                state.pendingToast = ToastPayload(
                     style: .warning,
                     title: "입력 제한",
                     message: "최대 12자리까지 입력할 수 있습니다."
                 )
                 return
             }
-            
+
             state.display = next
             state.isEnteringNewNumber = false
-            
+
         case .operator(let `operator`):
             let cur = Double(state.display) ?? 0
-            
+
             if let prev = state.previousValue,
                let op = state.pendingOperator
             {
@@ -58,14 +58,13 @@ struct CalculatorReducer {
             } else {
                 state.previousValue = cur
             }
-            
+
             state.pendingOperator = `operator`
             state.isEnteringNewNumber = true
         case .decimal:
             guard state.display.contains(".") == false else {
                 state.errorMessage = "소수점은 하나만 올 수 있습니다."
-                // TODO: 전역으로 이동 필요
-                state.toast = ToastPayload(
+                state.pendingToast = ToastPayload(
                     style: .warning,
                     title: "주의",
                     message: "소수점은 하나만 입력할 수 있습니다.",
@@ -79,13 +78,13 @@ struct CalculatorReducer {
             guard let prev = state.previousValue,
                   let op = state.pendingOperator
             else { return }
-            
+
             let cur = Double(state.display) ?? 0
             state.display = calculate(prev, op, cur)
-            
+
             state.previousValue = nil
             state.pendingOperator = nil
-            
+
             state.isEnteringNewNumber = true
         case .allClear:
             state = CalculatorState()
@@ -98,7 +97,7 @@ struct CalculatorReducer {
             if state.display.isEmpty { state.display = "0" }
         }
     }
-    
+
     private func calculate(_ prev: Double, _ op: CalculatorButton.Operator, _ cur: Double) -> String {
         switch op {
         case .add:
@@ -111,7 +110,7 @@ struct CalculatorReducer {
             return String(prev / cur)
         }
     }
-    
+
     private func digitCount(_ value: String) -> Int {
         value.filter(\.isNumber).count
     }

@@ -12,5 +12,5 @@ struct ToastPayload: Equatable, Identifiable {
     var style: ToastStyle
     var title: String
     var message: String
-    var duration: TimeInterval = 3
+    var duration: TimeInterval = 1
 }

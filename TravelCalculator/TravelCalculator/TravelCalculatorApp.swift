@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct TravelCalculatorApp: App {
+    @StateObject private var toastManager = ToastManager()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(toastManager)
+                .toast(Binding(
+                    get: { toastManager.toast },
+                    set: { _ in toastManager.dismiss() }
+                ))
         }
     }
 }

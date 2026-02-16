@@ -59,6 +59,7 @@ struct CalculatorToolbar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
+                        .foregroundStyle(Color.main800)
                 }
 
                 Button(action: onSettingsTap) {
@@ -67,14 +68,15 @@ struct CalculatorToolbar: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20, height: 20)
+                        .foregroundStyle(Color.main800)
                 }
             }
             .foregroundStyle(Color.gray300)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(Color.main100)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .frame(maxWidth: .infinity)
+        .background(Color.gray200)
     }
 }
 

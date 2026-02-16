@@ -10,6 +10,7 @@ import SwiftUI
 struct ToastModifier: ViewModifier {
     @Binding var payload: ToastPayload?
     @State private var workItem: DispatchWorkItem?
+    @State private var feedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     
     func body(content: Content) -> some View {
         content
@@ -20,6 +21,7 @@ struct ToastModifier: ViewModifier {
                 }.animation(.spring(), value: payload?.id)
             )
             .onAppear {
+                feedbackGenerator.prepare()
                 showToast()
             }
             .onChange(of: payload) { _, newValue in
@@ -58,8 +60,8 @@ struct ToastModifier: ViewModifier {
     
     private func showToast() {
         guard let payload else { return }
-        
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+
+        feedbackGenerator.impactOccurred()
         
         if payload.duration > 0 {
             workItem?.cancel()

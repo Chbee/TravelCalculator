@@ -38,4 +38,14 @@ extension Currency {
     }
 
     var currencyUnit: String { rawValue }
+
+    /// ISO 국가코드(예: "KR", "US", "TW")로 Currency 매칭
+    init?(countryCode: String) {
+        switch countryCode {
+        case "KR": self = .KRW
+        case "US": self = .USD
+        case "TW": self = .TWD
+        default: return nil
+        }
+    }
 }
