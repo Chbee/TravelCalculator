@@ -5,7 +5,7 @@
 //  Created by 손지영 on 1/4/26.
 //
 
-import SwiftUI
+import Foundation
 
 
 enum CalculatorIntent: Equatable {

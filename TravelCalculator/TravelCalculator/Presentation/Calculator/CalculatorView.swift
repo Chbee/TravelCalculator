@@ -28,23 +28,15 @@ struct CalculatorView: View {
                 // 컨텐츠
                 GeometryReader { proxy in
                     let width = proxy.size.width * 0.8
+                    let displayHeight = proxy.size.height * 0.23
 
                     VStack(spacing: 16) {
                         // 디스플레이
-                        Text(store.state.formattedDisplay)
-                            .font(.system(size: 40, weight: .bold))
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .frame(height: 52, alignment: .trailing)
-                            .minimumScaleFactor(0.5)
-                            .lineLimit(1)
-                            .foregroundColor(store.state.isInputLimitExceeded ? Color.red : Color.gray900)
-                            .animation(.easeInOut(duration: 0.1), value: store.state.isInputLimitExceeded)
+                        CalculatorDisplay(state: store.state)
+                            .frame(height: displayHeight)
 
                         // 키패드
-                        CalculatorKeypad(
-                            state: store.state,
-                            send: store.send
-                        )
+                        CalculatorKeypad(send: store.send)
                     }
                     .frame(width: width)
                     .frame(maxWidth: .infinity)
@@ -67,13 +59,6 @@ struct CalculatorView: View {
         .onAppear {
             if store == nil {
                 store = CalculatorStore(toastManager: toastManager)
-            }
-        }
-        .onChange(of: store?.state.isInputLimitExceeded ?? false) { _, newValue in
-            if newValue {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    store?.send(.resetInputLimitFlag)
-                }
             }
         }
     }

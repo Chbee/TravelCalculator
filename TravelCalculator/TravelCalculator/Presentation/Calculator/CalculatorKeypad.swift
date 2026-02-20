@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CalculatorKeypad: View {
-    let state: CalculatorState
     let send: (CalculatorIntent) -> Void
     
     private let buttons: [[CalculatorButton]] = [
@@ -96,7 +95,6 @@ private struct KeyButton: View {
 
 #Preview {
     CalculatorKeypad(
-        state: CalculatorState(),
         send: { _ in }
     )
 }

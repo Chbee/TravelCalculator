@@ -39,13 +39,13 @@ struct CalculatorToolbar: View {
                         .renderingMode(.template)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 12, height: 12)
+                        .frame(width: 14, height: 14)
                     Text(isOnline ? "온라인" : "오프라인")
-                        .font(.system(size: 10, weight: .medium))
+                        .font(.system(size: 12, weight: .medium))
                 }
                 .foregroundStyle(Color.main800)
                 Text(lastUpdated)
-                    .font(.system(size: 9))
+                    .font(.system(size: 10))
                     .foregroundStyle(Color.main600)
             }
 

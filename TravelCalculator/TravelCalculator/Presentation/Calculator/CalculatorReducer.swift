@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import UIKit
 
 struct CalculatorReducer {
-    private let maxInputDigits = 12
+    private let maxInputDigits = 8
 
     func reduce(state: inout CalculatorState, intent: CalculatorIntent) {
         switch intent {
@@ -25,20 +24,19 @@ struct CalculatorReducer {
     private func handleKey(_ state: inout CalculatorState, key: CalculatorButton) {
         switch key {
         case .number(let int):
-            var next = state.display == "0" ? "\(int)" : state.display
-            + "\(int)"
-            if state.isEnteringNewNumber {
+            let next: String
+            if state.isEnteringNewNumber || state.display == "0" {
                 next = "\(int)"
+            } else {
+                next = state.display + "\(int)"
             }
 
             guard digitCount(next) <= maxInputDigits else {
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-
                 state.isInputLimitExceeded = true
                 state.pendingToast = ToastPayload(
                     style: .warning,
                     title: "입력 제한",
-                    message: "최대 12자리까지 입력할 수 있습니다."
+                    message: "최대 8자리까지 입력할 수 있습니다."
                 )
                 return
             }
@@ -63,7 +61,6 @@ struct CalculatorReducer {
             state.isEnteringNewNumber = true
         case .decimal:
             guard state.display.contains(".") == false else {
-                state.errorMessage = "소수점은 하나만 올 수 있습니다."
                 state.pendingToast = ToastPayload(
                     style: .warning,
                     title: "주의",
@@ -107,6 +104,7 @@ struct CalculatorReducer {
         case .multiply:
             return String(prev * cur)
         case .divide:
+            guard cur != 0 else { return "0" }
             return String(prev / cur)
         }
     }
