@@ -46,7 +46,7 @@ struct CalculatorToolbar: View {
                 .foregroundStyle(Color.main800)
                 Text(lastUpdated)
                     .font(.system(size: 10))
-                    .foregroundStyle(Color.main600)
+                    .foregroundStyle(Color.main700)
             }
 
             Spacer()
