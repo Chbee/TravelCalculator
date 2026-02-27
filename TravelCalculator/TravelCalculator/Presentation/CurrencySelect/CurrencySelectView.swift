@@ -38,7 +38,7 @@ struct CurrencySelectView: View {
 
                         Text("통화 설정을 위해 국가를 선택해주세요")
                             .font(.subheadline)
-                            .foregroundStyle(Color.textSecondary)
+                            .foregroundStyle(Color.gray600)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 20)
@@ -90,11 +90,11 @@ struct CurrencySelectView: View {
                                         Text(currency.countryName)
                                             .font(.body)
                                             .fontWeight(.medium)
-                                            .foregroundStyle(Color.textPrimary)
+                                            .foregroundStyle(Color.main900)
 
                                         Text(currency.rawValue)
                                             .font(.caption)
-                                            .foregroundStyle(Color.textTertiary)
+                                            .foregroundStyle(Color.gray400)
                                     }
 
                                     Spacer()
