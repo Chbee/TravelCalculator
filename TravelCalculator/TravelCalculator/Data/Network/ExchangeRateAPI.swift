@@ -6,13 +6,16 @@
 import Foundation
 
 final class ExchangeRateAPI {
-    private let baseURL = "https://www.koreaexim.go.kr/site/program/financial/exchangeJSON"
-    private let apiKey: String
+    private let baseURL: String?
+    private let statCode = "731Y001"
+    private let apiKey: String?
     private let cacheFileName = "exchange_rates_cache.json"
     private let cacheValidityHours: Int = 24
 
-    init(apiKey: String = "") {
-        self.apiKey = apiKey
+    init() {
+        let info = Bundle.main.infoDictionary
+        self.baseURL = info?["EXCHANGE_RATE_BASE_URL"] as? String
+        self.apiKey = info?["EXCHANGE_RATE_API_KEY"] as? String
     }
 
     // MARK: - Public
@@ -58,14 +61,15 @@ final class ExchangeRateAPI {
     // MARK: - API
 
     private func fetchFromAPI() async throws -> [ExchangeRate] {
-        var components = URLComponents(string: baseURL)!
-        components.queryItems = [
-            URLQueryItem(name: "authkey", value: apiKey),
-            URLQueryItem(name: "searchdate", value: todayString()),
-            URLQueryItem(name: "data", value: "AP01")
-        ]
+        guard let baseURL, let apiKey else {
+            throw APIError.missingConfiguration
+        }
 
-        guard let url = components.url else {
+        let today = todayString()
+        // {baseURL}/{apiKey}/json/kr/1/{count}/{statCode}/D/{startDate}/{endDate}/{itemCode}
+        let urlString = "\(baseURL)/\(apiKey)/json/kr/1/1/\(statCode)/D/\(today)/\(today)"
+
+        guard let url = URL(string: urlString) else {
             throw APIError.invalidURL
         }
 
@@ -106,11 +110,13 @@ final class ExchangeRateAPI {
     // MARK: - Error
 
     enum APIError: LocalizedError {
+        case missingConfiguration
         case invalidURL
         case serverError
 
         var errorDescription: String? {
             switch self {
+            case .missingConfiguration: return "API 설정이 누락되었습니다."
             case .invalidURL: return "잘못된 URL입니다."
             case .serverError: return "서버 오류가 발생했습니다."
             }

@@ -183,6 +183,7 @@ MVP 진행 중 발견된 개선사항. V1 완료 후 또는 여유 시 처리.
 |------|------|----------|
 | 1.2.3 | Toast 제스처 개선 | Low |
 | 1.2.3 | Toast 전역 선언 리팩토링 | Medium |
+| 2.4 | API 설정 누락(missingConfiguration) 시 재시도 또는 fallback 처리 | Medium |
 
 ---
 
