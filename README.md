@@ -1,6 +1,6 @@
 # 💱 TravelCalculator
 
-![Progress](https://img.shields.io/badge/V1_Progress-11%2F48_(23%25)-orange)
+![Progress](https://img.shields.io/badge/V1_Progress-13%2F48_(27%25)-orange)
 
 여행지에서 사용할 계산기를 만드는 iOS 앱입니다.
 SwiftUI와 MVI 아키텍처를 중심으로 설계하고, 학습과 실험을 함께 진행합니다.
@@ -99,9 +99,9 @@ TravelCalculator/
 - [~] **1.5.2 실시간 변환 표시** - 입력 중에도 변환 결과 표시
 
 #### 1.6 통화 상태 구조 정리
-- [ ] **1.6.1 AppCurrencyStore 전역 통화 상태 정리** - 기본 통화 fallback과 선택 상태 관리 정책 정리
-- [ ] **1.6.2 Calculator DisplayModel 분리 마무리** - display 계산 로직과 로컬 state 책임 분리
-- [ ] **1.6.3 CurrencySelect 전역 통화 연동 정리** - 선택/위치 기반 통화 변경 흐름 단일화
+- [~] **1.6.1 AppCurrencyStore 전역 통화 상태 정리** - 기본 통화 fallback과 선택 상태 관리 정책 정리
+- [x] **1.6.2 Calculator DisplayModel 분리 마무리** - display 계산 로직과 로컬 state 책임 분리
+- [x] **1.6.3 CurrencySelect 전역 통화 연동 정리** - 선택/위치 기반 통화 변경 흐름 단일화
 
 ---
 
@@ -173,11 +173,11 @@ TravelCalculator/
 
 | 마일스톤 | 태스크 수 | 완료 |
 |----------|----------|------|
-| 1. 계산기 화면 완성 | 18개 | 11/18 |
+| 1. 계산기 화면 완성 | 18개 | 13/18 |
 | 2. 환율 로직 구현 | 11개 | 0/11 |
 | 3. 오프라인 대응 | 10개 | 0/10 |
 | 4. 테스트 코드 | 9개 | 0/9 |
-| **합계** | **48개** | **11/48** |
+| **합계** | **48개** | **13/48** |
 
 ---
 
