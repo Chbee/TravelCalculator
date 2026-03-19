@@ -6,3 +6,14 @@
 //
 
 import Foundation
+
+extension Double {
+    func formatDecimal(maxFractionDigits: Int) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = maxFractionDigits
+        formatter.groupingSeparator = ","
+        return formatter.string(from: NSNumber(value: self)) ?? "0"
+    }
+}

@@ -6,3 +6,10 @@
 //
 
 import Foundation
+import Observation
+
+@MainActor
+@Observable // MARK: 추후 마이그레이션 예정
+final class AppStore: ObservableObject {
+    let currencyStore = AppCurrencyStore()
+}

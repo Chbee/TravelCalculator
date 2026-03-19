@@ -11,7 +11,6 @@ import Foundation
 enum CalculatorIntent: Equatable {
     case keyPressed(CalculatorButton)
     case resetInputLimitFlag
-    case selectCurrency(Currency)
 }
 
 

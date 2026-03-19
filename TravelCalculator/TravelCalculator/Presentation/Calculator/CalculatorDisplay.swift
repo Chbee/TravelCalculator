@@ -8,27 +8,28 @@
 import SwiftUI
 
 struct CalculatorDisplay: View {
-    let state: CalculatorState
+    let model: CalculatorDisplayModel
+    let isInputLimitExceeded: Bool
 
     var body: some View {
         VStack(alignment: .trailing, spacing: 8) {
-            Text(state.rateDisplay)
+            Text(model.rateDisplay)
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(Color.gray600)
                 .lineLimit(1)
                 .truncationMode(.tail)
 
             HStack(alignment: .lastTextBaseline, spacing: 6) {
-                Text(state.inputDisplay.currency.rawValue)
+                Text(model.inputDisplay.currency.rawValue)
                     .font(.system(size: 24, weight: .light))
                     .foregroundStyle(Color.gray600)
 
-                Text(state.inputDisplay.text)
+                Text(model.inputDisplay.text)
                     .font(.system(size: 46, weight: .bold))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
-                    .foregroundStyle(state.isInputLimitExceeded ? Color.red500 : Color.main900)
+                    .foregroundStyle(isInputLimitExceeded ? Color.red500 : Color.main900)
                     .frame(maxWidth: .infinity, alignment: .trailing)
             }
 
@@ -37,7 +38,7 @@ struct CalculatorDisplay: View {
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Color.blue500)
 
-                Text(state.resultDisplay.text + " " + state.resultDisplay.currency.rawValue)
+                Text(model.resultDisplay.text + " " + model.resultDisplay.currency.rawValue)
                     .font(.system(size: 26, weight: .semibold))
                     .monospacedDigit()
                     .foregroundStyle(Color.blue500)

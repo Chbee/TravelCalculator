@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CalculatorView: View {
     @EnvironmentObject private var toastManager: ToastManager
+    @EnvironmentObject private var appStore: AppStore
+    
     @State private var store: CalculatorStore?
     @State private var isCurrencySelectPresented = false
 
@@ -16,7 +18,7 @@ struct CalculatorView: View {
         VStack(spacing: 24) {
             // 툴바
             CalculatorToolbar(
-                currency: store?.state.selectedCurrency ?? .KRW,
+                currency: appStore.currencyStore.currentCurrency,
                 isOnline: true, // TODO: 네트워크 상태 연결
                 lastUpdated: "방금 전", // TODO: 실제 업데이트 시간 연결
                 onCurrencyTap: { isCurrencySelectPresented = true },
@@ -32,7 +34,10 @@ struct CalculatorView: View {
 
                     VStack(spacing: 16) {
                         // 디스플레이
-                        CalculatorDisplay(state: store.state)
+                        CalculatorDisplay(
+                            model: store.displayModel,
+                            isInputLimitExceeded: store.state.isInputLimitExceeded
+                        )
                             .frame(height: displayHeight)
 
                         // 키패드
@@ -44,12 +49,7 @@ struct CalculatorView: View {
             }
         }
         .fullScreenCover(isPresented: $isCurrencySelectPresented) {
-            CurrencySelectView(
-                initialCurrency: store?.state.selectedCurrency ?? .KRW,
-                onSelect: { currency in
-                    store?.send(.selectCurrency(currency))
-                }
-            )
+            CurrencySelectView()
             .environmentObject(toastManager)
             .toast(Binding(
                 get: { toastManager.toast },
@@ -58,7 +58,10 @@ struct CalculatorView: View {
         }
         .onAppear {
             if store == nil {
-                store = CalculatorStore(toastManager: toastManager)
+                store = CalculatorStore(
+                    toastManager: toastManager,
+                    currencyStore: appStore.currencyStore
+                )
             }
         }
     }
@@ -67,4 +70,5 @@ struct CalculatorView: View {
 #Preview {
     CalculatorView()
         .environmentObject(ToastManager())
+        .environmentObject(AppStore())
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 enum CurrencySelectIntent: Equatable {
-    case onAppear(initialCurrency: Currency)
+    case onAppear
     case tapCurrentLocation
     case tapCurrency(Currency)
 }

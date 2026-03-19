@@ -9,32 +9,38 @@ import SwiftUI
 import Observation
 
 @MainActor
-@Observable
+@Observable // MARK: 추후 마이그레이션 예정
 final class CurrencySelectStore {
     private(set) var state = CurrencySelectState()
     private let permissionService: PermissionService
     private let locationService: LocationServiceProtocol
     private let toastManager: ToastManager
+    private let currencyStore: AppCurrencyStore
 
     init(
         toastManager: ToastManager,
+        currencyStore: AppCurrencyStore,
         permissionService: PermissionService = LocationPermissionService(),
         locationService: LocationServiceProtocol = LocationService()
     ) {
         self.toastManager = toastManager
+        self.currencyStore = currencyStore
         self.permissionService = permissionService
         self.locationService = locationService
+    }
+    
+    var selectedCurrency: Currency {
+        currencyStore.currentCurrency
     }
 
     func send(_ intent: CurrencySelectIntent) {
         switch intent {
-        case .onAppear(let initialCurrency):
-            state.selectedCurrency = initialCurrency
+        case .onAppear:
             state.locationPermission = permissionService.status()
         case .tapCurrentLocation:
             handleLocationRequest()
         case .tapCurrency(let currency):
-            state.selectedCurrency = currency
+            currencyStore.update(currency)
         }
     }
 
@@ -75,7 +81,7 @@ final class CurrencySelectStore {
                 let countryCode = try await locationService.fetchCountryCode()
 
                 if let currency = Currency(countryCode: countryCode) {
-                    state.selectedCurrency = currency
+                    currencyStore.update(currency)
                     toastManager.show(ToastPayload(
                         style: .success,
                         title: "위치 확인 완료",

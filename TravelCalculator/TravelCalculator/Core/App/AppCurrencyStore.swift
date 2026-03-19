@@ -9,9 +9,15 @@ import Foundation
 import Observation
 
 @MainActor
-@Observable
+@Observable // MARK: 추후 마이그레이션 예정
 final class AppCurrencyStore {
     var selectedCurrency: Currency? = nil
     
+    var currentCurrency: Currency {
+        selectedCurrency ?? .KRW
+    }
     
+    func update(_ currency: Currency) {
+        selectedCurrency = currency
+    }
 }

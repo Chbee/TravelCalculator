@@ -10,11 +10,10 @@ import SwiftUI
 struct CurrencySelectView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var toastManager: ToastManager
+    @EnvironmentObject private var appStore: AppStore
+    
     @State private var store: CurrencySelectStore?
-
-    var initialCurrency: Currency = .KRW
-    var onSelect: ((Currency) -> Void)?
-
+    
     private var locationButtonColor: Color {
         guard let store else { return Color.gray500 }
         switch store.state.locationPermission {
@@ -22,7 +21,7 @@ struct CurrencySelectView: View {
         default: return Color.gray500
         }
     }
-
+    
     var body: some View {
         ZStack {
             Color.main100
@@ -79,7 +78,6 @@ struct CurrencySelectView: View {
                         ForEach(store.state.currencies) { currency in
                             Button {
                                 store.send(.tapCurrency(currency))
-                                onSelect?(currency)
                                 dismiss()
                             } label: {
                                 HStack(spacing: 16) {
@@ -98,8 +96,8 @@ struct CurrencySelectView: View {
                                     }
 
                                     Spacer()
-
-                                    if store.state.selectedCurrency == currency {
+                                    
+                                    if store.selectedCurrency == currency {
                                         Image(systemName: "checkmark")
                                             .font(.system(size: 16, weight: .semibold))
                                             .foregroundStyle(Color.green500)
@@ -134,9 +132,12 @@ struct CurrencySelectView: View {
         }
         .onAppear {
             if store == nil {
-                store = CurrencySelectStore(toastManager: toastManager)
+                store = CurrencySelectStore(
+                    toastManager: toastManager,
+                    currencyStore: appStore.currencyStore
+                )
             }
-            store?.send(.onAppear(initialCurrency: initialCurrency))
+            store?.send(.onAppear)
         }
     }
 }
@@ -144,4 +145,5 @@ struct CurrencySelectView: View {
 #Preview {
     CurrencySelectView()
         .environmentObject(ToastManager())
+        .environmentObject(AppStore())
 }

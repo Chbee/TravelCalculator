@@ -9,14 +9,58 @@ import SwiftUI
 import Observation
 
 @MainActor
-@Observable
+@Observable // MARK: 추후 마이그레이션 예정
 final class CalculatorStore {
     private(set) var state = CalculatorState()
     private let reducer = CalculatorReducer()
+    
     private let toastManager: ToastManager
+    private let currencyStore: AppCurrencyStore
 
-    init(toastManager: ToastManager) {
+    init(toastManager: ToastManager, currencyStore: AppCurrencyStore) {
         self.toastManager = toastManager
+        self.currencyStore = currencyStore
+    }
+    
+    var selectedCurrency: Currency {
+        currencyStore.currentCurrency
+    }
+    
+    var targetCurrency: Currency {
+        selectedCurrency == .KRW ? .USD : .KRW
+    }
+    
+    var convertedAmount: Double { state.inputAmount * exchangeRate }
+    
+    var displayModel: CalculatorDisplayModel {
+        CalculatorDisplayModel(
+            inputDisplay: CurrencyAmoutDisplayModel(
+                currency: selectedCurrency,
+                text: state.inputAmount.formatDecimal(
+                    maxFractionDigits: 2
+                )
+            ),
+            resultDisplay: CurrencyAmoutDisplayModel(
+                currency: targetCurrency,
+                text: convertedAmount.formatDecimal(
+                    maxFractionDigits: 2
+                )
+            ),
+            exchangeRate: exchangeRate
+        )
+    }
+    
+    // FIXME: 테스트용, API 적용 후 삭제 예정
+    var exchangeRate: Double {
+        switch (selectedCurrency, targetCurrency) {
+        case (.KRW, .USD): return 1.0 / 1320.50
+        case (.USD, .KRW): return 1320.50
+        case (.KRW, .TWD): return 0.024
+        case (.TWD, .KRW): return 41.6
+        case (.USD, .TWD): return 31.5
+        case (.TWD, .USD): return 0.0317
+        default: return 1
+        }
     }
 
     func send(_ intent: CalculatorIntent) {

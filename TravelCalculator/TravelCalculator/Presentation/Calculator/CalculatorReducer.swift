@@ -16,8 +16,6 @@ struct CalculatorReducer {
             handleKey(&state, key: calculatorButton)
         case .resetInputLimitFlag:
             state.isInputLimitExceeded = false
-        case .selectCurrency(let currency):
-            state.selectedCurrency = currency
         }
     }
 

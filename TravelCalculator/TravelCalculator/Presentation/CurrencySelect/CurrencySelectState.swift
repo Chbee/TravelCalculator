@@ -9,7 +9,6 @@ import Foundation
 
 struct CurrencySelectState: Equatable {
     var currencies: [Currency] = Currency.allCases
-    var selectedCurrency: Currency? = nil
     var locationPermission: PermissionStatus = .notDetermined
     var isSearchingLocation: Bool = false
 }
