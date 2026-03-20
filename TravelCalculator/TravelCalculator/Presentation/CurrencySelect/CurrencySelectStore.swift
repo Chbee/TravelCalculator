@@ -30,7 +30,7 @@ final class CurrencySelectStore {
     }
     
     var selectedCurrency: Currency {
-        currencyStore.currentCurrency
+        currencyStore.selectedCurrency
     }
 
     func send(_ intent: CurrencySelectIntent) {
@@ -40,7 +40,7 @@ final class CurrencySelectStore {
         case .tapCurrentLocation:
             handleLocationRequest()
         case .tapCurrency(let currency):
-            currencyStore.update(currency)
+            currencyStore.selectCurrency(currency)
         }
     }
 
@@ -81,7 +81,7 @@ final class CurrencySelectStore {
                 let countryCode = try await locationService.fetchCountryCode()
 
                 if let currency = Currency(countryCode: countryCode) {
-                    currencyStore.update(currency)
+                    currencyStore.selectCurrency(currency)
                     toastManager.show(ToastPayload(
                         style: .success,
                         title: "위치 확인 완료",

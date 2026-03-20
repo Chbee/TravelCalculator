@@ -22,12 +22,12 @@ final class CalculatorStore {
         self.currencyStore = currencyStore
     }
     
-    var selectedCurrency: Currency {
-        currencyStore.currentCurrency
+    var fromCurrency: Currency {
+        currencyStore.fromCurrency
     }
     
-    var targetCurrency: Currency {
-        selectedCurrency == .KRW ? .USD : .KRW
+    var toCurrency: Currency {
+        currencyStore.toCurrency
     }
     
     var convertedAmount: Double { state.inputAmount * exchangeRate }
@@ -35,13 +35,13 @@ final class CalculatorStore {
     var displayModel: CalculatorDisplayModel {
         CalculatorDisplayModel(
             inputDisplay: CurrencyAmoutDisplayModel(
-                currency: selectedCurrency,
+                currency: fromCurrency,
                 text: state.inputAmount.formatDecimal(
                     maxFractionDigits: 2
                 )
             ),
             resultDisplay: CurrencyAmoutDisplayModel(
-                currency: targetCurrency,
+                currency: toCurrency,
                 text: convertedAmount.formatDecimal(
                     maxFractionDigits: 2
                 )
@@ -52,7 +52,7 @@ final class CalculatorStore {
     
     // FIXME: 테스트용, API 적용 후 삭제 예정
     var exchangeRate: Double {
-        switch (selectedCurrency, targetCurrency) {
+        switch (fromCurrency, toCurrency) {
         case (.KRW, .USD): return 1.0 / 1320.50
         case (.USD, .KRW): return 1320.50
         case (.KRW, .TWD): return 0.024

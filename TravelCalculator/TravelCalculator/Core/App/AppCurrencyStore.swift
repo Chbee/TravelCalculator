@@ -8,16 +8,45 @@
 import Foundation
 import Observation
 
+enum ConversionDirection {
+    case selectedToKRW
+    case krwToSelected
+}
+
 @MainActor
 @Observable // MARK: 추후 마이그레이션 예정
 final class AppCurrencyStore {
-    var selectedCurrency: Currency? = nil
+    var selectedCurrency: Currency = .KRW
+    var conversionDirection: ConversionDirection = .selectedToKRW
     
-    var currentCurrency: Currency {
-        selectedCurrency ?? .KRW
+    var fromCurrency: Currency {
+        if selectedCurrency == .KRW { return .KRW }
+        switch conversionDirection {
+        case .selectedToKRW: return selectedCurrency
+        case .krwToSelected: return .KRW
+        }
     }
     
-    func update(_ currency: Currency) {
+    var toCurrency: Currency {
+        if selectedCurrency == .KRW { return .KRW }
+        switch conversionDirection {
+        case .selectedToKRW: return .KRW
+        case .krwToSelected: return selectedCurrency
+        }
+    }
+    
+    func selectCurrency(_ currency: Currency) {
         selectedCurrency = currency
+        
+        conversionDirection = .selectedToKRW
+    }
+    
+    func toggleConversionDirection() {
+        guard selectedCurrency != .KRW else { return }
+        
+        switch conversionDirection {
+        case .selectedToKRW: conversionDirection = .krwToSelected
+        case .krwToSelected: conversionDirection = .selectedToKRW
+        }
     }
 }

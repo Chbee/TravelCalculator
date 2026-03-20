@@ -18,7 +18,7 @@ struct CalculatorView: View {
         VStack(spacing: 24) {
             // 툴바
             CalculatorToolbar(
-                currency: appStore.currencyStore.currentCurrency,
+                currency: appStore.currencyStore.selectedCurrency,
                 isOnline: true, // TODO: 네트워크 상태 연결
                 lastUpdated: "방금 전", // TODO: 실제 업데이트 시간 연결
                 onCurrencyTap: { isCurrencySelectPresented = true },
